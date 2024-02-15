@@ -7,13 +7,8 @@ namespace Framework
 {
     /// <summary>
     /// The Core class singleton. Used as a central script and manager.
-    /// </summary>
-    /// <remarks>
-    /// The core is sealed by default, making it non-inheritable. It is an internal class, and is non-modifiable. 
-    /// However, if you find yourself needing to extend the core's functionality, you can delete the sealed part, which will allow it to be inherited.
-    /// Then, you can create a derived class from the core that you can edit.
-    /// </remarks>
-    internal sealed class Core
+    /// </summary> <remarks>Create a derived class to modify.</remarks>
+    internal class Core
     {
         /// <summary>
         /// The <see cref="Core">Core's</see> instance. Please use ONLY this instance.
@@ -40,8 +35,12 @@ namespace Framework
         /// The current Game State.
         /// </summary>
         internal StateEnumerable GameState { get { return gameState; } }
+        /// <summary>
+        /// The event invoked upon a game state change.
+        /// </summary>
+        internal event IRegisteredScript.StateChangeHandler StateChanged = delegate { };
 
-        private const string Version = "0.0.2:CS-CRFW";
+        private const string Version = "0.0.3:CS-CRFW";
 
         private int NextID = 0;
         private object _key = new();
@@ -56,6 +55,7 @@ namespace Framework
         {
             Register(this);
             gameState = StateEnumerable.Running;
+            StateChanged?.Invoke(new(gameState));
         }
 
         #region Registration, states, and others
@@ -69,11 +69,10 @@ namespace Framework
             Objects[type].Add(obj);
             if (IsRegisteredScript(obj) && obj != null)
             {
-                IRegisteredScript i_obj = obj! as IRegisteredScript;
-                i_obj.ID = NextID;
+                ((IRegisteredScript)obj).ID = NextID;
                 NextID += 1;
 
-                i_obj.StateChange += HandleStateChange;
+                ((IRegisteredScript)obj).StateChange += HandleStateChange;
 
             }
         }

@@ -30,6 +30,8 @@ namespace Framework.Structures
     /// <see cref="StateEnumerable">State</see>,
     /// <see cref="StateChangeHandler">StateChangeHandler</see>,
     /// <see cref="StateChange">StateChange</see>.
+    /// </remarks>
+    /// <example>
     /// Usage Example:
     /// <code>
     /// internal class Example : IRegisteredScript
@@ -55,7 +57,7 @@ namespace Framework.Structures
     ///     }
     /// }
     /// </code>
-    /// </remarks>
+    /// </example>
     internal interface IRegisteredScript
     {
         /// <summary>
