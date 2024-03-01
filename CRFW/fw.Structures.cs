@@ -31,33 +31,6 @@ namespace Framework.Structures
     /// <see cref="StateChangeHandler">StateChangeHandler</see>,
     /// <see cref="StateChange">StateChange</see>.
     /// </remarks>
-    /// <example>
-    /// Usage Example:
-    /// <code>
-    /// internal class Example : IRegisteredScript
-    /// {
-    ///     private Core core;
-    ///     // Interface fields and properties go here.
-    ///     // They need private fields to be used, like this:
-    ///     private int _id;
-    ///     // Then they need to be EXPLICTLY defined, like this:
-    ///     int IRegisteredScript.ID 
-    ///     {
-    ///         get { return _id; }
-    ///         set { _id = value; }
-    ///     } // For the rest we will assume backing properties exist
-    ///     
-    ///     internal Example() 
-    ///     {
-    ///         core = Core.Instance;
-    ///         core.Register(this);
-    ///         
-    ///         _state = StateEnumerable.Running;
-    ///         _stateChange.Invoke(new(_state));
-    ///     }
-    /// }
-    /// </code>
-    /// </example>
     internal interface IRegisteredScript
     {
         /// <summary>
@@ -88,27 +61,6 @@ namespace Framework.Structures
     /// <remarks> Includes
     /// <see cref="RCHResponse">OnRaycastHit</see>,
     /// <see cref="RCHLayerEnumerable">RCHLayer</see>.
-    /// Usage Example:
-    /// <code>
-    /// internal class Example : IRegisteredScript, IExistent
-    /// {
-    ///     private Core core;
-    ///     // IRegisteredScript member implementations.
-    ///     // IExistent field and property implementation.
-    ///     // Like IRegisteredScript, this is done with backing properties and explicit declarations.
-    ///     
-    ///     internal Example()
-    ///     {
-    ///         core = Core.Instance;
-    ///     }
-    ///     
-    ///     RCHResponse IExistent.OnRaycastHit(RCHEventArgs args)
-    ///     {
-    ///         // Your response compilation logic here.
-    ///         return new();
-    ///     }
-    /// }
-    /// </code>
     /// </remarks>
     internal interface IExistent
     {
@@ -123,6 +75,8 @@ namespace Framework.Structures
         /// </summary>
         internal RCHLayerEnumerable RCHLayer { get; set; }
     }
+    internal class UnregisteredScriptException : Exception { }
+
     internal enum StateEnumerable
     {
         None,
@@ -131,7 +85,8 @@ namespace Framework.Structures
         Ready,
         Running,
         Started,
-        Initializing
+        Initializing,
+        Errored
     }
     internal enum RCHLayerEnumerable
     {

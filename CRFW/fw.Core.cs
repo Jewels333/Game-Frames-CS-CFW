@@ -12,20 +12,7 @@ namespace Framework
     {
         /// <summary>
         /// The <see cref="Core">Core's</see> instance. Please use ONLY this instance.
-        /// </summary> 
-        /// <remarks>
-        /// Usage Example:
-        /// <code>
-        /// internal class Example : IRegisteredScript
-        /// {
-        ///     private Core core;
-        ///     internal Example()
-        ///     {
-        ///         core = Core.Instance;
-        ///     }
-        /// }
-        /// </code>
-        /// </remarks>
+        /// </summary>
         internal static Core Instance { get { return instance; } }
         /// <summary>
         /// All registered objects & scripts.
@@ -63,17 +50,25 @@ namespace Framework
         /// Registers the given object with the Core.
         /// </summary>
         /// <param name="obj">The object to register.</param>
-        internal void Register(object obj)
+        /// <param name="onError">The action to perform on an error (null by default).</param>
+        internal void Register(object obj, Action<Exception>? onError = null)
         {
-            Type type = obj.GetType();
-            Objects[type].Add(obj);
-            if (IsRegisteredScript(obj) && obj != null)
+
+            try
             {
-                ((IRegisteredScript)obj).ID = NextID;
-                NextID += 1;
+                Type type = obj.GetType();
+                Objects[type].Add(obj);
+                if (IsRegisteredScript(obj) && obj != null)
+                {
+                    ((IRegisteredScript)obj).ID = NextID;
+                    NextID += 1;
 
-                ((IRegisteredScript)obj).StateChange += HandleStateChange;
+                    ((IRegisteredScript)obj).StateChange += HandleStateChange;
 
+                }  else { throw new UnregisteredScriptException(); }
+            } catch (Exception ex)
+            {
+                onError?.Invoke(ex);
             }
         }
         /// <summary>

@@ -7,4 +7,4 @@ Do not download the `Example.cs` file, that's for example purposes.
 ### Documentation
 The CS-CRFW framework is completely documented and is ready for use. Create a pull request if you have something to add.
 
-Current Version: 0.0.3:CS-CRFW
+Current Version: 0.0.4:CS-CRFW
