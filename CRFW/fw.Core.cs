@@ -7,8 +7,9 @@ namespace Framework
 {
     /// <summary>
     /// The Core class singleton. Used as a central script and manager.
-    /// </summary> <remarks>Create a derived class to modify.</remarks>
-    internal class Core
+    /// </summary> 
+    /// <remarks>Use the 'partial' modifier to modify</remarks>
+    internal partial class Core
     {
         /// <summary>
         /// The <see cref="Core">Core's</see> instance. Please use ONLY this instance.
@@ -158,14 +159,12 @@ namespace Framework
         /// <summary>
         /// Send a message to another script.
         /// </summary>
-        /// <param name="reciever">The target script.</param>
         /// <param name="message">The message to send.</param>
-        /// <param name="sender"><code>this</code></param>
-        internal void Send(object reciever, object message, object sender)
+        internal void Send(Message message)
         {
-            if (IsRegisteredScript(reciever) && IsRegistered(reciever))
+            if (IsRegisteredScript(message.Reciever) && IsRegistered(message.Reciever))
             {
-                ((IRegisteredScript)reciever).OnMessage(message, sender);
+                ((IRegisteredScript)message.Reciever).OnMessage(message);
             }
         }
         #endregion

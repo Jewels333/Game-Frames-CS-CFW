@@ -7,21 +7,21 @@ namespace Framework.Structures
     /// </summary>
     internal class GSCEventArgs : EventArgs
     {
-        internal GSCEventArgs() { }
+        public GSCEventArgs() { }
     }
     /// <summary>
     /// Registered Script event args. (Used in <see cref="IRegisteredScript"/>)
     /// </summary>
-    internal class RSEventArgs : EventArgs
+    public class RSEventArgs : EventArgs
     {
         public StateEnumerable State;
-        internal RSEventArgs(StateEnumerable state)
+        public RSEventArgs(StateEnumerable state)
         {
             State = state;
         }
     }
-    internal class RCHEventArgs { }
-    internal class RCHResponse { }
+    public class RCHEventArgs { }
+    public class RCHResponse { }
     /// <summary>
     /// The Registered Script interface.
     /// </summary>
@@ -31,7 +31,7 @@ namespace Framework.Structures
     /// <see cref="StateChangeHandler">StateChangeHandler</see>,
     /// <see cref="StateChange">StateChange</see>.
     /// </remarks>
-    internal interface IRegisteredScript
+    public interface IRegisteredScript
     {
         /// <summary>
         /// The ID of the script (given out by core)
@@ -46,14 +46,13 @@ namespace Framework.Structures
         /// The method called when a message is sent to the script.
         /// </summary>
         /// <param name="message">Message sent (of any type)</param>
-        /// <param name="sender">The sender of the message.</param>
-        internal void OnMessage(object message, object sender);
+        internal void OnMessage(Message message);
 
-        internal delegate void StateChangeHandler(RSEventArgs args);
+        public delegate void StateChangeHandler(RSEventArgs args);
         /// <summary>
         /// The event to be invoked on a state change.
         /// </summary>
-        internal event StateChangeHandler StateChange;
+        public event StateChangeHandler StateChange;
     }
     /// <summary>
     /// The Existent interface. Applied when a script is not a meta script, and instead exists.
@@ -62,7 +61,7 @@ namespace Framework.Structures
     /// <see cref="RCHResponse">OnRaycastHit</see>,
     /// <see cref="RCHLayerEnumerable">RCHLayer</see>.
     /// </remarks>
-    internal interface IExistent
+    public interface IExistent
     {
         /// <summary>
         /// The method to be called on a raycast hit.
@@ -74,10 +73,45 @@ namespace Framework.Structures
         /// The Raycast layer the transform is on.
         /// </summary>
         internal RCHLayerEnumerable RCHLayer { get; set; }
-    }
-    internal class UnregisteredScriptException : Exception { }
 
-    internal enum StateEnumerable
+        internal double X { get; set; }
+        internal double Y { get; set; }
+    }
+    public class UnregisteredScriptException : Exception { }
+
+    public class Message
+    {
+        public IRegisteredScript Sender;
+        public IRegisteredScript Reciever;
+        public object Content;
+        public MessageType Type;
+
+        public bool IsResponse;
+
+        public Message(object content, MessageType type, IRegisteredScript sender, IRegisteredScript reciever, bool isResponse = false)
+        {
+            Content = content;
+            Type = type;
+            Sender = sender;
+            Reciever = reciever;
+            IsResponse = isResponse;
+        }
+
+        public void Deconstruct(out IRegisteredScript sender, out IRegisteredScript reciever, out object content, out MessageType type)
+        {
+            sender = Sender;
+            reciever = Reciever;
+            content = Content;
+            type = Type;
+        }
+    }
+
+    public enum MessageType
+    {
+        ErrorQuery, None, What,
+        Response
+    }
+    public enum StateEnumerable
     {
         None,
         Waiting,
@@ -88,9 +122,10 @@ namespace Framework.Structures
         Initializing,
         Errored
     }
-    internal enum RCHLayerEnumerable
+    public enum RCHLayerEnumerable
     {
         Hitable,
-        Interactable
+        Interactable,
+        None
     }
 }
